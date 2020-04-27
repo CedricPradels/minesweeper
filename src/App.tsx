@@ -1,16 +1,18 @@
 import React, { useCallback, useState } from "react";
-import { maxHeaderSize } from "http";
 
 const size = "30";
 const dim = 20;
 
-const neighbourhood4 = [
+const neighbourhood8 = [
+  [-1, -1],
   [0, -1],
+  [1, -1],
   [-1, 0],
   [1, 0],
-  [0, -1],
+  [-1, 1],
+  [0, 1],
+  [1, 1],
 ];
-
 function App() {
   const createCell = useCallback(
     () => ({
@@ -26,16 +28,6 @@ function App() {
     []
   );
   const addClues = useCallback((setGrid) => {
-    const neighbourhood8 = [
-      [-1, -1],
-      [0, -1],
-      [1, -1],
-      [-1, 0],
-      [1, 0],
-      [-1, 1],
-      [0, 1],
-      [1, 1],
-    ];
     setGrid((grid: any) => {
       let swapGrid = [...grid];
       const rows = grid.length;
@@ -109,10 +101,53 @@ function App() {
         {grid.map((row, x) =>
           row.map((cell, y) => (
             <div
+              onClick={() => {
+                if (!cell.isReaveled) {
+                  let swapGrid = [...grid];
+                  if (cell.isBomb) {
+                    swapGrid = grid.map((x) =>
+                      x.map((y) => (y.isBomb ? { ...y, isReaveled: true } : y))
+                    );
+                  } else if (!!cell.clue) {
+                    swapGrid[x][y].isReaveled = true;
+                  } else {
+                    const resolve = (x: any, y: any) => {
+                      neighbourhood8.forEach(([dx, dy]) => {
+                        const shiftedX = x + dx,
+                          shiftedY = y + dy;
+                        if (
+                          shiftedX >= 0 &&
+                          shiftedX < dim &&
+                          shiftedY >= 0 &&
+                          shiftedY < dim
+                        ) {
+                          const { isReaveled, isBomb, clue } = swapGrid[
+                            shiftedX
+                          ][shiftedY];
+                          if (!isReaveled) {
+                            if (clue === 0 && !isBomb) {
+                              swapGrid[shiftedX][shiftedY].isReaveled = true;
+                              resolve(shiftedX, shiftedY);
+                            } else if (clue > 0) {
+                              swapGrid[shiftedX][shiftedY].isReaveled = true;
+                            }
+                          }
+                        }
+                      });
+                    };
+                    resolve(x, y);
+                  }
+                  setGrid(swapGrid);
+                }
+              }}
               key={`${x}${y}`}
               style={{
                 border: "1px black solid",
-                backgroundColor: cell.isBomb ? "red" : "gray",
+                backgroundColor: !cell.isReaveled
+                  ? "gray"
+                  : cell.isBomb
+                  ? "red"
+                  : "darkgray",
                 width: size + "px",
                 height: size + "px",
                 display: "flex",
@@ -120,7 +155,7 @@ function App() {
                 alignItems: "center",
               }}
             >
-              {!!cell.clue ? cell.clue : ""}
+              {cell.isReaveled && !!cell.clue ? cell.clue : ""}
             </div>
           ))
         )}
