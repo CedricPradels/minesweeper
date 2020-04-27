@@ -101,6 +101,12 @@ function App() {
         {grid.map((row, x) =>
           row.map((cell, y) => (
             <div
+              onContextMenu={(e) => {
+                e.preventDefault();
+                const swapGrid = [...grid];
+                swapGrid[x][y].isFalgged = !swapGrid[x][y].isFalgged;
+                setGrid(swapGrid);
+              }}
               onClick={() => {
                 if (!cell.isReaveled) {
                   let swapGrid = [...grid];
@@ -144,7 +150,9 @@ function App() {
               style={{
                 border: "1px black solid",
                 backgroundColor: !cell.isReaveled
-                  ? "gray"
+                  ? cell.isFalgged
+                    ? "green"
+                    : "gray"
                   : cell.isBomb
                   ? "red"
                   : "darkgray",
