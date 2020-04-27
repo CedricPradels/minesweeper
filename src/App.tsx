@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect, lazy } from "react";
+import { getDiffieHellman } from "crypto";
 
 const size = "30";
 const dim = 20;
@@ -74,6 +75,18 @@ function App() {
 
   const [grid, setGrid] = useState(createGrid(dim));
 
+  useEffect(() => {
+    const flatGrid = grid.flat();
+    if (flatGrid.filter((x) => x.isBomb).some((bomb) => bomb.isReaveled)) {
+      alert("Boom");
+    } else if (
+      flatGrid.filter((x) => x.isBomb).every((bomb) => bomb.isFalgged) &&
+      flatGrid.filter((x) => !x.isBomb).every((safe) => safe.isReaveled)
+    ) {
+      alert("You are safe !");
+    }
+  });
+
   return (
     <>
       <button
@@ -108,7 +121,7 @@ function App() {
                 setGrid(swapGrid);
               }}
               onClick={() => {
-                if (!cell.isReaveled) {
+                if (!cell.isReaveled && !cell.isFalgged) {
                   let swapGrid = [...grid];
                   if (cell.isBomb) {
                     swapGrid = grid.map((x) =>
