@@ -1,5 +1,10 @@
-import React, { useCallback, useState, useEffect, lazy } from "react";
-import { getDiffieHellman } from "crypto";
+import React, { useCallback, useState, useEffect } from "react";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBomb, faFlag } from "@fortawesome/free-solid-svg-icons";
+
+import Bomb from "./components/Bomb";
+import Flag from "./components/Flag";
 
 const size = "30";
 const dim = 20;
@@ -92,7 +97,7 @@ function App() {
       <button
         onClick={() => {
           setGrid(createGrid(dim));
-          addBombs(10, setGrid);
+          addBombs(30, setGrid);
         }}
       >
         Add bombs
@@ -161,11 +166,14 @@ function App() {
               }}
               key={`${x}${y}`}
               style={{
-                border: "1px black solid",
+                fontFamily: "courier",
+                fontWeight: "bold",
+                borderWidth: cell.isReaveled ? "1px" : "3px",
+                borderStyle: cell.isReaveled ? "solid" : "outset",
+                borderColor: cell.isReaveled ? "dimgray" : "lightgray",
+                boxSizing: "border-box",
                 backgroundColor: !cell.isReaveled
-                  ? cell.isFalgged
-                    ? "green"
-                    : "gray"
+                  ? "silver"
                   : cell.isBomb
                   ? "red"
                   : "darkgray",
@@ -174,9 +182,12 @@ function App() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                padding: "5% 5%",
               }}
             >
-              {cell.isReaveled && !!cell.clue ? cell.clue : ""}
+              {cell.isFalgged && <Flag />}
+              {cell.isReaveled && cell.isBomb && <Bomb />}
+              {cell.isReaveled && !!cell.clue && cell.clue}
             </div>
           ))
         )}
