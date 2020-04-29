@@ -13,7 +13,7 @@ const Rectangle = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 5%;
+  width: 10%;
   height: 100%;
   background: #000;
 `;

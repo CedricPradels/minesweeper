@@ -23,6 +23,7 @@ const Rectangle = styled.div.attrs(({ rotate }: { rotate: number }) => ({
   position: absolute;
   top: 50%;
   left: 50%;
+  transform-origin: center;
   transform: translate(-50%, -50%) rotate(${(props) => props.rotate}deg);
   width: 100%;
   height: 10%;
