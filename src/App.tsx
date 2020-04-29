@@ -1,11 +1,19 @@
 import React, { useCallback, useState, useEffect } from "react";
 
+import styled from "styled-components";
+
 import Bomb from "./components/Bomb";
 import Flag from "./components/Flag";
 import Smiley from "./components/Smiley";
 import Button from "./components/Button";
 import Cell from "./components/Cell";
 import Grid from "./components/Grid";
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const size = 30;
 const dim = 20;
@@ -94,9 +102,7 @@ function App() {
   });
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
+    <Container>
       <Button
         style={{
           width: "100px",
@@ -163,25 +169,6 @@ function App() {
                 }
               }}
               key={`${x}${y}`}
-              // style={{
-              //   fontFamily: "courier",
-              //   fontWeight: "bold",
-              //   borderWidth: cell.isReaveled ? "1px" : "3px",
-              //   borderStyle: cell.isReaveled ? "solid" : "outset",
-              //   borderColor: cell.isReaveled ? "dimgray" : "lightgray",
-              //   boxSizing: "border-box",
-              //   backgroundColor: !cell.isReaveled
-              //     ? "silver"
-              //     : cell.isBomb
-              //     ? "red"
-              //     : "darkgray",
-              //   width: size + "px",
-              //   height: size + "px",
-              //   display: "flex",
-              //   justifyContent: "center",
-              //   alignItems: "center",
-              //   padding: "5% 5%",
-              // }}
             >
               {cell.isFalgged && <Flag />}
               {cell.isReaveled && cell.isBomb && <Bomb />}
@@ -190,7 +177,7 @@ function App() {
           ))
         )}
       </Grid>
-    </div>
+    </Container>
   );
 }
 
